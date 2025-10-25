@@ -1,53 +1,99 @@
-html, body, #root {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.container {
+/* Fundo geral */
+body {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  font-family: Arial, sans-serif;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  height: 100%;
-  background-color: bisque;
-  font-size: 24px;
-  font-family: sans-serif;
+  padding: 40px;
 }
 
+/* Container principal */
+.container {
+  background-color: #fff8f0;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  padding: 30px;
+  width: 400px;
+  text-align: center;
+}
+
+/* Título */
+h1 {
+  color: #444;
+  margin-bottom: 20px;
+}
+
+/* Área de input e botão */
 .input-area {
-  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-input {
-  padding: 8px;
-  width: 200px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  margin-right: 8px;
+.input-area input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  margin-right: 10px;
 }
 
-button {
-  padding: 8px 12px;
-  background-color: #4CAF50;
+.input-area button {
+  background-color: #ff9800;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
+  padding: 10px 15px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
+.input-area button:hover {
+  background-color: #e68900;
+}
+
+/* Lista de tarefas */
 ul {
   list-style: none;
   padding: 0;
 }
 
 li {
-  text-align: left;
-  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff0e0;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
+
+li:hover {
+  background-color: #ffe2c4;
+}
+
+/* Checkbox e texto */
+li input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+  cursor: pointer;
 }
 
 .concluida {
   text-decoration: line-through;
   color: gray;
+}
+
+/* Botão de excluir */
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
 }

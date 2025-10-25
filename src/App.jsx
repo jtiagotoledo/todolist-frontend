@@ -3,62 +3,59 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 function App() {
-
   const [textTarefa, setTextTarefa] = useState('')
   const [tarefas, setTarefas] = useState([])
 
+  // Carregar tarefas ao iniciar o app
   useEffect(() => {
     async function carregarTarefas() {
       try {
-        const resposta = await axios.get('http://localhost:3000/tarefas')
-        console.log(resposta.data);
-        
-        setTarefas(resposta.data) // backend deve retornar um array de tarefas
+        const resposta = await axios.get('http://192.168.15.7:3000/tarefas')
+        setTarefas(resposta.data) // assume que backend retorna array de tarefas
       } catch (erro) {
         console.error('Erro ao carregar tarefas:', erro)
       }
     }
-
     carregarTarefas()
   }, [])
 
   async function addTarefa() {
-    if (textTarefa.trim() === '') return 
-
-    try {
-      const resposta = await axios.post('http://localhost:3000/tarefas', {
-        titulo: textTarefa,
-        concluida: false
-      })
-      console.log('resposta', resposta);
-      
-      setTarefas([...tarefas, resposta.data.dados]) // adiciona a nova tarefa vinda do backend
-      setTextTarefa('')
-    } catch (erro) {
-      console.error('Erro ao adicionar tarefa:', erro)
-    }
-  }
-
-  async function toggleConcluida(index) {
-  const tarefa = tarefas[index]
-  const novasTarefas = [...tarefas]
-  novasTarefas[index].concluida = !tarefa.concluida
-  setTarefas(novasTarefas)
+  if (textTarefa.trim() === '') return
 
   try {
-    await axios.put(`http://localhost:3000/tarefas/${tarefa._id}`, {
-      concluida: novasTarefas[index].concluida
+    const resposta = await axios.post('http://192.168.15.7:3000/tarefas', {
+      titulo: textTarefa,
+      concluida: false  
     })
-    console.log('Tarefa atualizada no backend!')
+    setTarefas([...tarefas, resposta.data])
+    setTextTarefa('')
   } catch (erro) {
-    console.error('Erro ao atualizar tarefa no backend:', erro)
+    console.error('Erro ao adicionar tarefa:', erro)
   }
 }
 
+  async function toggleConcluida(id) {
+    try {
+      const resposta = await axios.put(`http://192.168.15.7:3000/tarefas/${id}/toggle`);
+      const tarefaAtualizada = resposta.data;
+      setTarefas(tarefas.map(t => t._id === id ? tarefaAtualizada : t));
+    } catch (erro) {
+      console.error('Erro ao alternar tarefa:', erro);
+    }
+  }
+
+  async function deleteTarefa(id) {
+    try {
+      await axios.delete(`http://192.168.15.7:3000/tarefas/${id}`)
+      setTarefas(tarefas.filter(t => t._id !== id))
+    } catch (erro) {
+      console.error('Erro ao excluir tarefa:', erro)
+    }
+  }
+
   return (
     <div className='container'>
-      <h1>Todo List da Elaine</h1>
-      <br></br>
+      <h1>Todo List</h1>
       <div className="input-area">
         <input
           type="text"
@@ -67,21 +64,28 @@ function App() {
           onChange={(e) => setTextTarefa(e.target.value)}
         />
         <button onClick={addTarefa}>Adicionar</button>
-        <ul>
-        {tarefas.map((tarefa, index) => (
-          <li key={index}>
-            <input 
-              type="checkbox" 
+      </div>
+
+      <ul>
+        {tarefas.map((tarefa) => (
+          <li key={tarefa._id}>
+            <input
+              type="checkbox"
               checked={tarefa.concluida}
-              onChange={() => toggleConcluida(index)}
+              onChange={() => toggleConcluida(tarefa._id)}
             />
             <span className={tarefa.concluida ? 'concluida' : ''}>
               {tarefa.titulo}
             </span>
+            <button
+              className="delete-btn"
+              onClick={() => deleteTarefa(tarefa._id)}
+            >
+              🗑️
+            </button>
           </li>
         ))}
       </ul>
-      </div>
     </div>
   )
 }
